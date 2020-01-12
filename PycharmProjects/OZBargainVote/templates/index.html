@@ -22,7 +22,15 @@
     </form>
     <ul class="movie-list">
         {% for movie in movies %}  {# 迭代 movies 变量 #}
-        <li>{{ movie }}</li>  {# 等同于 movie['title'] #}
+        <li>
+            {{ movie }}
+
+            {% if current_user.is_authenticated %}
+                <form class="inline-form" method="post" action="{{ url_for('delete', movie_id=movie) }}">
+                    <input class="btn" type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure?')">
+                </form>
+            {% endif %}
+        </li>  {# 等同于 movie['title'] #}
         {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
     </ul>
     <img class="totoro" alt="Walking Totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">

@@ -87,3 +87,8 @@ input[name=year] {
     border-color: #b8daff;
     border-radius: 5px;
 }
+
+.inline-form {
+    display: inline;
+    float: right;
+}
