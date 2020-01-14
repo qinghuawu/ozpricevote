@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div align="center" style="font-size:25px">{{ current_user.username }}的领地</div><br><br>
+<div align="center" style="font-size:29px">
+    <a class="snu" href="{{ url_for('my_like') }}">我的点赞</a>
+    <a class="snu" href="{{ url_for('my_collection') }}">我的收藏</a>
+</div>
+{% endblock %}

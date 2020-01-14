@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div align="center" style="font-size:25px">{{ current_user.username }}的领地</div><br><br>
+<div align="center" style="font-size:29px">
+    <a class="snu" href="{{ url_for('my_like') }}">我的点赞</a>
+    <a class="snu" href="{{ url_for('my_collection') }}">我的收藏</a>
+</div>
+<ul class="product-list">
+    <li style="height:30px; font-size:20px">
+        <span style="float:left; padding:0px 60px">商品</span>
+    </li>
+    {% for product in products %}
+    <li>
+        <form method="get" action="{{ url_for('cancel_star', item_id=product.item_id) }}" style="float:right; font-size:30px; padding:70px 100px">
+            <input class="snu" type="submit" name="unstar" value="取消收藏" onclick="return confirm('Are you sure?')">
+        </form>
+        <div style="width:165px; text-align:center">
+            <a href="{{ product.url }}">
+                <img src="{{ product.image }}" align="middle"><br>
+                <span style="width:35px; height:46px">{{ product.title_chinese }}</span>
+            </a><br><br>
+            <span style="font-size:19px">${{ product.price }}</span>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

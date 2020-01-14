@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div align="center" style="font-size:25px">点赞排行榜</div><br><br>
+{% if not current_user.is_authenticated %}
+<h3 align="center">登录以点赞和收藏</h3>
+{% endif %}
+<ul class="product-list">
+    <li style="height:30px; font-size:20px">
+        <span style="float:left; padding:0px 60px">商品</span>
+        <span style="float:right; padding:0px 70px">点赞数</span>
+    </li>
+    {% for product in product_info %}
+    <li>
+        <span style="float:right; font-size:30px; padding:70px 100px">{{ product.like_count }}</span>
+        <div style="width:165px; text-align:center">
+            <a href="{{ product.url }}">
+                <img src="{{ product.image }}" align="middle"><br>
+                <span style="width:35px; height:46px">{{ product.title_chinese }}</span>
+            </a><br><br>
+            <span style="font-size:19px">${{ product.price }}</span>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

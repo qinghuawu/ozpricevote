@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+    {% endblock %}
+</head>
+<body>
+    {% for message in get_flashed_messages() %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+
+    <h2>
+        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
+        {% if current_user and current_user.is_authenticated %}
+        Hi, {{ current_user.username }}!
+        <span class="float-right">
+            <a class="snu" href="{{ url_for('user_space') }}">个人空间</a>
+            <a class="snu" href="{{ url_for('logout') }}">Logout</a>
+        </span>
+        {% else %}
+        Welcome! Sign up for free!
+        <span class="float-right">
+            <a class="snu" href="{{ url_for('signup') }}">Signup</a>
+            <a class="snu" href="{{ url_for('login') }}">Login</a>
+        </span>
+        {% endif %}
+    </h2>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">主页</a></li>
+            <li><a href="{{ url_for('discount_board') }}">今日史低</a></li>
+            <li><a href="{{ url_for('like_board') }}">点赞排行</a></li>
+        </ul>
+        <form action="{{ url_for('search') }}" method="post" style="padding-left:358px; display:inline-table">
+            <input type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </nav><br>
+    {% block content %}{% endblock %}
+    <img class="totoro" alt="Walking Totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
+    <footer>
+        <small>&copy; 2020 Qinghua Wu</small>
+    </footer>
+</body>
+</html>

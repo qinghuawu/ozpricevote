@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div align="center" style="font-size:25px">今日大折扣</div><br><br>
+{% if not search_res %}
+<h3>没找到您搜的品牌，请换个品牌试试</h3>
+{% else %}
+<h3>为您找到了{{ num }}件商品</h3>
 <table align="center">
-    {% for three_products in products %}
+    {% for three_products in search_res %}
     <tr>
         {% for product in three_products %}
         <td>
@@ -26,4 +29,5 @@
     </tr>
     {% endfor %}
 </table>
+{% endif %}
 {% endblock %}
