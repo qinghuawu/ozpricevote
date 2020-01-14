@@ -5,13 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+    <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+    <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     {% endblock %}
 </head>
 <body>
     {% for message in get_flashed_messages() %}
         <div class="alert">{{ message }}</div>
     {% endfor %}
-
     <h2>
         <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
         {% if current_user and current_user.is_authenticated %}
@@ -35,7 +37,7 @@
             <li><a href="{{ url_for('like_board') }}">点赞排行</a></li>
         </ul>
         <form action="{{ url_for('search') }}" method="post" style="padding-left:358px; display:inline-table">
-            <input type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
+            <input id="autocomplete" type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
             <button type="submit" class="btn">Search</button>
         </form>
     </nav><br>
@@ -44,5 +46,10 @@
     <footer>
         <small>&copy; 2020 Qinghua Wu</small>
     </footer>
+    <script>
+    $( "#autocomplete" ).autocomplete({
+      source: "/autocomplete"
+    });
+    </script>
 </body>
 </html>

@@ -3,6 +3,8 @@ from config import DevelopmentConfig
 import redis
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
+import json
+
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig())
@@ -64,7 +66,7 @@ def index():
         product = redis_cli.hgetall(f'item:info:{product_id}')
         product['discount'] = str(round(float(product['discount']) * 100)) + '%'
         products.append(product)
-    products = [products[i:i+3] for i in range(0, len(products), 3)]
+    products = [products[i:i + 3] for i in range(0, len(products), 3)]
     return render_template('index.html', products=products)
 
 
@@ -195,13 +197,17 @@ def search():
         product['discount'] = str(round(float(product['discount']) * 100)) + '%'
         search_res.append(product)
     num_items = len(search_res)
-    search_res = [search_res[i:i+3] for i in range(0, len(search_res), 3)]
+    search_res = [search_res[i:i + 3] for i in range(0, len(search_res), 3)]
     return render_template('search.html', search_res=search_res, num=num_items)
 
 
-@app.route('/auto-completion', methods=['GET', 'POST'])
-def auto_completion():
-    search_content = str(request.form['search_content']).lower()
-    search_res = redis_cli.zrangebylex('brands:', '['+search_content, '('+search_content+'{')
-    print(search_res)
-    return render_template('search.html', search_res=search_res)
+@app.route('/autocomplete')
+def autocomplete():
+    completion_content = str(request.args.get('term')).lower()
+    completion_res = redis_cli.zrangebylex('brands:', '[' + completion_content, '(' + completion_content + '{')[:8]
+    return json.dumps(completion_res)
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
