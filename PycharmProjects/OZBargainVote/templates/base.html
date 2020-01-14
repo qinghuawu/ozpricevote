@@ -15,7 +15,7 @@
         <div class="alert">{{ message }}</div>
     {% endfor %}
     <h2>
-        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
+        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/small.jpeg') }}">
         {% if current_user and current_user.is_authenticated %}
         Hi, {{ current_user.username }}!
         <span class="float-right">
@@ -36,13 +36,13 @@
             <li><a href="{{ url_for('discount_board') }}">今日史低</a></li>
             <li><a href="{{ url_for('like_board') }}">点赞排行</a></li>
         </ul>
-        <form action="{{ url_for('search') }}" method="post" style="padding-left:358px; display:inline-table">
+        <form action="{{ url_for('search') }}" style="padding-left:358px; display:inline-table">
             <input id="autocomplete" type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
             <button type="submit" class="btn">Search</button>
         </form>
     </nav><br>
     {% block content %}{% endblock %}
-    <img class="totoro" alt="Walking Totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
+    <img class="totoro" src="{{ url_for('static', filename='images/endding.gif') }}">
     <footer>
         <small>&copy; 2020 Qinghua Wu</small>
     </footer>

@@ -100,7 +100,7 @@ async def init_spyder():
                 tr.delete('brands:')
                 tr.zadd('brands:', *[item for brand in brands for item in [0, brand]])
                 await tr.execute()
-                sleep_time = 3.5 * 60 * 60
+                sleep_time = 7 * 60 * 60
             await asyncio.sleep(sleep_time)
     except asyncio.CancelledError:
         pass

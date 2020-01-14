@@ -1,10 +1,9 @@
 from flask import Flask, url_for, render_template, request, flash, redirect
-from config import DevelopmentConfig
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 import redis
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
 import json
-
+from config import DevelopmentConfig
+from model import User
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig())
@@ -16,46 +15,6 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id).retrieve_user_by_id()
-
-
-class User(UserMixin):
-    def __init__(self, user_id=-1):
-        self.username = ''
-        self.id = user_id
-        self.password_hash = ''
-
-    def register(self, username, password):
-        self.username = username
-        if redis_cli.hget('user:index', self.username):
-            return False
-        self.id = redis_cli.incr('user:id')
-        redis_cli.hset('user:index', self.username, self.id)  # 会和hget冲突，需锁或watch
-        self.set_password(password)
-        redis_cli.hmset(f'user:info:{self.id}', {'name': self.username, 'password': self.password_hash})
-        return True
-
-    def retrieve_user(self, username):
-        self.username = username
-        self.id = redis_cli.hget('user:index', self.username)
-        if not self.id:
-            return False
-        user = redis_cli.hgetall(f'user:info:{self.id}')
-        self.password_hash = user['password']
-        return self
-
-    def retrieve_user_by_id(self):
-        user = redis_cli.hgetall(f'user:info:{self.id}')
-        if not user:
-            return False
-        self.username = user['name']
-        self.password_hash = user['password']
-        return self
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def validate_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
 
 @app.route('/')
@@ -81,7 +40,7 @@ def signup():
         return redirect(url_for('signup'))
     else:
         flash('Success! Please login.')
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -187,9 +146,9 @@ def cancel_star(item_id):
     return redirect(url_for('my_collection'))
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search')
 def search():
-    search_content = str(request.form['search_content']).lower()
+    search_content = str(request.args['search_content']).lower()
     search_item_ids = redis_cli.smembers(f'{search_content}:items')
     search_res = []
     for item_id in search_item_ids:
@@ -206,8 +165,3 @@ def autocomplete():
     completion_content = str(request.args.get('term')).lower()
     completion_res = redis_cli.zrangebylex('brands:', '[' + completion_content, '(' + completion_content + '{')[:8]
     return json.dumps(completion_res)
-
-
-@app.route('/test')
-def test():
-    return render_template('test.html')
