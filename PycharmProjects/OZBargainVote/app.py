@@ -2,11 +2,11 @@ from flask import Flask, url_for, render_template, request, flash, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 import redis
 import json
-from config import DevelopmentConfig
+from config import Config
 from model import User
 
 app = Flask(__name__)
-app.config.from_object(DevelopmentConfig())
+app.config.from_object(Config())
 redis_cli = redis.StrictRedis(**app.config['REDIS_CONF'])
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
