@@ -15,7 +15,8 @@ async def open_url(url, session, headers):
             data = await resp.text()
             soup = BeautifulSoup(data, 'lxml')
             return soup
-    except:
+    except Exception as e:
+        print(e)
         pass
 
 

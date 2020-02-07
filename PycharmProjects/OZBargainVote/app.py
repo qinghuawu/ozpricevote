@@ -1,9 +1,10 @@
-from flask import Flask, url_for, render_template, request, flash, redirect
+from flask import Flask, url_for, render_template, request, flash, redirect, make_response, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 import redis
 import json
 from config import Config
 from model import User
+from forms import SignupForm, LoginForm
 
 app = Flask(__name__)
 app.config.from_object(Config())
@@ -31,46 +32,49 @@ def index():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    username = request.form['username']
-    password = request.form['password']
-    if not User().register(username, password):
-        flash('Please try another username.')
-        return redirect(url_for('signup'))
-    else:
+    form = SignupForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        if not User().register(username, password):
+            flash('Please try another username.')
+            return redirect(url_for('signup'))
         flash('Success! Please login.')
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
+    return render_template('signup_login.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    username = request.form['username']
-    password = request.form['password']
-    user = User().retrieve_user(username)
-    if user and user.validate_password(password):
-        login_user(user)
-        print(current_user, current_user.id)
-        flash('Login success.')
-        return redirect(url_for('index'))
-    flash('Invalid username or password')
-    return redirect(url_for('login'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        user = User().retrieve_user(username)
+        if user and user.validate_password(password):
+            login_user(user)
+            print(current_user, current_user.id)
+            flash('Login success.')
+            return redirect(url_for('index'))
+        flash('Invalid username or password')
+        return redirect(url_for('login'))
+    return render_template('signup_login.html', form=form)
 
 
-@app.route('/like/<int:user_id>/<int:item_id>')
-def like(user_id, item_id):
-    if not redis_cli.sadd(f'user:like:{user_id}', item_id):
+@app.route('/like/<int:item_id>', methods=['POST'])
+@login_required
+def like(item_id):
+    if not redis_cli.sadd(f'user:like:{current_user.id}', item_id):
         flash('You already liked.')
     else:
         redis_cli.zincrby('like:count', 1, item_id)
     return redirect(request.referrer)
 
 
-@app.route('/star/<int:user_id>/<int:item_id>')
-def star(user_id, item_id):
-    if not redis_cli.sadd(f'user:star:{user_id}', item_id):
+@app.route('/star/<int:item_id>', methods=['POST'])
+@login_required
+def star(item_id):
+    if not redis_cli.sadd(f'user:star:{current_user.id}', item_id):
         flash('You already starred.')
     return redirect(request.referrer)
 
