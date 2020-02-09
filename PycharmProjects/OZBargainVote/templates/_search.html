@@ -11,12 +11,6 @@
         {% for product in three_products %}
         <td>
             {% if current_user and current_user.is_authenticated %}
-            <form class="inline-form" method="get" action="{{ url_for('star', user_id=current_user.id, item_id=product.item_id) }}">
-                <input class="star" type="submit" name="star" value="Star">
-            </form>
-            <form class="inline-form" method="get" action="{{ url_for('like', user_id=current_user.id, item_id=product.item_id) }}">
-                <input class="like" type="submit" name="like" value="Like">
-            </form>
             {% endif %}
             <a href="{{ product.url }}">
                 <img src="{{ product.image }}" align="middle">

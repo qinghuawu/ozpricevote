@@ -1,54 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
-    <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
-    <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    {% endblock %}
-</head>
-<body>
-    {% for message in get_flashed_messages() %}
-        <div class="alert">{{ message }}</div>
-    {% endfor %}
-    <h2>
-        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/small.jpeg') }}">
-        {% if current_user and current_user.is_authenticated %}
-        Hi, {{ current_user.username }}!
-        <span class="float-right">
-            <a class="snu" href="{{ url_for('user_space') }}">个人空间</a>
-            <a class="snu" href="{{ url_for('logout') }}">Logout</a>
-        </span>
-        {% else %}
-        Welcome! Sign up for free!
-        <span class="float-right">
-            <a class="snu" href="{{ url_for('signup') }}">Signup</a>
-            <a class="snu" href="{{ url_for('login') }}">Login</a>
-        </span>
-        {% endif %}
-    </h2>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">主页</a></li>
-            <li><a href="{{ url_for('discount_board') }}">今日史低</a></li>
-            <li><a href="{{ url_for('like_board') }}">点赞排行</a></li>
+<nav class="blue lighten-2" role="navigation">
+    <div class="nav-wrapper container">
+        <ul class="left hide-on-med-and-down">
+            <li><a href="#intro" style="font-size: 2.1rem">OZBuy</a></li>
+            <li><a href="#discount" class="waves-effect waves-light">今日大折扣</a></li>
+            <li><a href="#cheapest-in-history" class="waves-effect waves-light">今日史低价</a></li>
+            <li><a href="#like-chart" class="waves-effect waves-light">点赞排行榜</a></li>
         </ul>
-        <form action="{{ url_for('search') }}" style="padding-left:358px; display:inline-table">
-            <input id="autocomplete" type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
-            <button type="submit" class="btn">Search</button>
-        </form>
-    </nav><br>
-    {% block content %}{% endblock %}<br>
-    <footer>
-        <small>&copy; 2020 Qinghua Wu</small>
-    </footer>
-    <script>
-    $( "#autocomplete" ).autocomplete({
-      source: "/autocomplete"
-    });
-    </script>
-</body>
-</html>
+        <a data-target="nav-mobile" class="sidenav-trigger button"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <div class="login-form" style="display:inline-table">
+                    <input id="autocomplete" type="text" placeholder="搜索品牌(e.g. swisse, ysl)" name="search_content" required>
+                </div>
+            </li>
+            {% if current_user.is_authenticated %}
+                <li>
+                    <a class="waves-effect waves-light btn orange" href="#my-space">{{ current_user.username }}'s space
+                    </a>
+                </li>
+                <li>
+                    <a class="waves-effect waves-light" id="logout-btn" data-href="{{ url_for('auth.logout') }}">
+                        <i class="material-icons">power_settings_new</i>
+                    </a>
+                </li>
+            {% else %}
+                <li><a class="waves-effect waves-light btn red" href="#signup">Signup</a></li>
+                <li><a class="waves-effect waves-light btn red" href="#login">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <h3>
+        {% if current_user and current_user.is_authenticated %}
+            Hi, {{ current_user.username }}!
+        {% else %}
+            Welcome! Sign up for free!
+        {% endif %}
+    </h3><br>
+    {% block content %}{% endblock %}
+</main>
+<footer class="center">
+    <small> &copy; 2019 Qinghua Wu -
+        <a class="blue-text link" href="https://github.com/qinghuawu/ozpricevote" title="Fork me on GitHub">GitHub</a>
+    </small>
+</footer>
+<script>
+$( "#autocomplete" ).autocomplete({
+  source: "/autocomplete"
+});
+</script>

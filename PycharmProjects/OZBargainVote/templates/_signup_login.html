@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <header class="center">
+        <h4 class="red-text">{{ mode }}</h4><br>
+    </header>
+    <div class="login-form">
+        <input class="validate login-input" id="username-input" name="username" type="text" placeholder="Username"
+               autofocus required>
+        <input class="validate login-input" id="password-input" name="password" type="password" placeholder="Password"
+               required>
+        <span class="right">
+            <a class="btn red" id="{{ mode }}-btn">Submit</a>
+        </span>
+    </div>
+{% endblock %}
